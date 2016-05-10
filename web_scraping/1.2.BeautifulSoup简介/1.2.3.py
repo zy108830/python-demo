@@ -2,8 +2,9 @@ from urllib.request import urlopen
 from urllib.error import HTTPError
 from bs4 import BeautifulSoup
 
+
 # 容错处理,定义一个获取页面title的getTitle函数
-def getTitle(url):
+def  getTitle(url):
     try:
         html = urlopen(url)
     except HTTPError as e:
@@ -18,6 +19,8 @@ def getTitle(url):
     except AttributeError  as e:
         return None
     return title
+
+
 title = getTitle('http://www.siguoya.name/')
 if title is None:
     print('节点不存在')
