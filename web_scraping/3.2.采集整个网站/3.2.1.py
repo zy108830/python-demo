@@ -15,6 +15,4 @@ def getLinks(pageUrl):
             pages.add(newArticle)
             print(newArticle)
             getLinks(newArticle)
-
-
 getLinks('')
