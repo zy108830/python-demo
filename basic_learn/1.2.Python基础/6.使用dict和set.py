@@ -13,6 +13,17 @@ print('sex' in d)
 # dict的get方法还可以给出一个默认值
 print(d.get('sex', '男'))
 
+# 输出可以迭代的dict值集合
+print('values:',d.values())
+print('items:',d.items())
+
+# 迭代d的key
+for key in d:
+    print('key:', key, 'value:', d[key])
+#迭代d的key=>value
+for k,v in d.items():
+    print(k,v)
+
 # ====================================================set=============================================
 # 创建一个set,需要传入一个list类型的变量----->set是无序的,不存在重复元素的list
 awardCode = set([1, 2, 3, 3, 3, 10])

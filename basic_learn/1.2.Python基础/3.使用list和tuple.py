@@ -40,6 +40,11 @@ print(classmates)
 classmates.append(['zqq', 'yfx'])
 print(classmates)
 
+# 迭代list,enumerate可以将list类型转换为类似dict的键值对类型
+names = ['zqq', 'yfx', 'congtou']
+for k,v in enumerate(names):
+    print(k,v)
+
 # =====================================tuple===================================
 
 # tuple和数组类似,但是tuple在定义的时候,元素必须被确定下来
@@ -68,3 +73,8 @@ t = (1, 2, ['zqq', 'yfx'])
 print(t)
 t[2].append('our')
 print(t)
+
+# tuple截取
+t = (1, 2, 3)
+print(t[2:])
+print(t[-2:])
