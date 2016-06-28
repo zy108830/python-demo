@@ -15,3 +15,6 @@ print(int('678'))
 print(bool('111'))
 print(bool(''))
 print(bool(0))
+
+#获取函数的名称
+print(abs.__name__)
