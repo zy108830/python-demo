@@ -1,0 +1,20 @@
+import functools
+
+# 当一个函数的参数经常是不变的,我们就可以通过偏函数来将其固定住,从而生成一个新的函数
+# 默认会输出10进制
+print(int('12345'))
+
+# 现在按照16进制来输出
+print(int('12345', base=16))
+
+
+# 如果我们自己定义一个函数专门输出16进制,需要这样做
+def int16(num):
+    return int(num, base=16)
+
+
+print(int16('12345'))
+
+# 但如果利用偏函数,我们即可这样做
+intSixteen=functools.partial(int,base=16)
+print(intSixteen('12345'))
