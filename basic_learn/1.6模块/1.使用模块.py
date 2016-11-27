@@ -18,6 +18,4 @@ print(__name__)
 print(sys.argv)
 
 
-#模块的public变量及方法的命名方式是abc,private变量及方法的命名方式就是_abc
-
-
+# 模块的public变量及方法的命名方式是abc,private变量及方法的命名方式就是_abc
