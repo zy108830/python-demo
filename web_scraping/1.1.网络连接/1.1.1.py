@@ -4,4 +4,4 @@ for x in range(10):
     try:
         html = urlopen("http://www.siguoya.name/" + str(x))
     except BaseException:
-        print(x)
+        print(BaseException)

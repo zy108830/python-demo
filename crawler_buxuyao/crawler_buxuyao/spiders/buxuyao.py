@@ -4,7 +4,7 @@ from crawler_buxuyao.items import BuxuyaoItem
 
 
 class BuxuyaoSpider(scrapy.Spider):
-    name = "buxuyao"
+    name = "crawler_buxuyao"
     allowed_domains = ["www.buxuyao.cn"]
     start_urls = [
         'http://www.buxuyao.cn/picture/list_2_1.html'
