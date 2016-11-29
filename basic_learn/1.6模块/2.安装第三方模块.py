@@ -4,14 +4,11 @@
 
 import sys
 
-#输出我们在引用一个模块时,python的搜索路径
+# 输出我们在引用一个模块时,python的搜索路径
+# 由于python的搜索机制,最好不要将文件命名与Py的模块名相同
 print(sys.path)
 
 ##添加搜索路径的方法有两种
 ##第一种:由于sys.path的数值为list,因此可以通过sys.append()方法添加搜索路径
 
 ##第二种:在shell环境中添加PATHONPATH环境变量
-
-
-
-
