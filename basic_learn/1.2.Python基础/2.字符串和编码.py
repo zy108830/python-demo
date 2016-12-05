@@ -19,5 +19,8 @@ print(name[-2:])
 print('A' + 'B')
 print('A', 'B')
 
-#字符串大小写转换
+# 字符串大小写转换
 print('A'.lower())
+
+# 字符串去空格，详见 http://www.jb51.net/article/33631.htm
+print(str.strip('  A  '))
