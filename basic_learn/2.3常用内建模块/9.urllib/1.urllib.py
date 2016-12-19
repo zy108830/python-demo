@@ -5,6 +5,3 @@ from urllib import request,parse
 
 
 #post请求
-
-
-
