@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-import json, time, os
+import json, time, sys
 
-file = open(os.getcwd()+'/config.json', 'r')
+file = open(sys.path[0]+'/config.json', 'r')
 config = json.loads(file.read())
 
 class Unicom():
