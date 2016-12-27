@@ -2,8 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import json, time, sys
 
-file = open(sys.path[0]+'/config.json', 'r')
+file = open(sys.path[0] + '/config.json', 'r')
 config = json.loads(file.read())
+
 
 class Unicom():
     def __init__(self, user, passwd):
@@ -42,7 +43,7 @@ class Unicom():
         try:
             code = json.loads(html)['code']
         except:
-            print('Login Failed!')
+            self.send_error('登录失败', html)
             return
         print('http://wap.10010.com/t/loginCallBack.htm?code=%s' % code)
         # 登录成功之后的回调
@@ -99,12 +100,27 @@ class Unicom():
                         "title": "思过崖的账单",
                         "text": "话费余额：" + str(self.query_fees()) + "，流量余额：" + str(
                             self.query_traffic()) + "，账单详情：" + str(
-                            unicom.query_bills())
+                            self.query_bills())
+                    }
+                ]
+            })
+        })
+
+    def send_error(self, errorTitle, errorMsg):
+        requests.post('https://hook.bearychat.com/=bw8S2/incoming/' + config['bearychat']['token'], data={
+            'payload': json.dumps({
+                "text": "联通话费账单监控 - " + time.strftime('%Y-%m-%d %X', time.localtime()),
+                "markdown": False,
+                "channel": "生活琐事",
+                "attachments": [
+                    {
+                        "title": errorTitle,
+                        "text": errorMsg
                     }
                 ]
             })
         })
 
 
-# unicom = Unicom(config['siguoya']['mobile']['number'], config['siguoya']['mobile']['password'])
-# unicom.send_notioce()
+unicom = Unicom(config['siguoya']['mobile']['number'], config['siguoya']['mobile']['password'])
+unicom.send_notioce()
