@@ -1,6 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-import json, time
+import json, time, os
+
+file = open(os.getcwd()+'/config.json', 'r')
+config = json.loads(file.read())
+
 class Unicom():
     def __init__(self, user, passwd):
         self.session = requests.session()
@@ -19,7 +23,6 @@ class Unicom():
             'Connection': 'keep-alive'
         }
         self.login(user, passwd)
-
 
     def login(self, user, passwd):
         data = {
@@ -49,7 +52,8 @@ class Unicom():
     def query_fees(self):
         # html = self.session.get('http://wap.10010.com/t/query/queryRealTimeFeeInfoNew.htm', headers=headers,verify=False).text
         html = self.session.get(
-            'http://wap.10010.com/t/query/queryBalanceNew.htm?menuId=000200010002&mobile_c_from=null', headers=self.headers,
+            'http://wap.10010.com/t/query/queryBalanceNew.htm?menuId=000200010002&mobile_c_from=null',
+            headers=self.headers,
             verify=False).text
         # html = self.session.get('http://wap.10010.com/t/operationservice/queryOcsPackageFlowLeft.htm?menuId=000200020004&mobile_c_from=null', headers=headers,verify=False).text
 
@@ -84,22 +88,23 @@ class Unicom():
             self.bills[str.strip(item.find('th').text)] = str.replace(item.find('td').text, ' 元', '')
         return self.bills
 
-file = open('./config.json', 'r')
-config=json.loads(file.read())
+    def send_notioce(self):
+        requests.post('https://hook.bearychat.com/=bw8S2/incoming/' + config['bearychat']['token'], data={
+            'payload': json.dumps({
+                "text": "联通话费账单监控 - " + time.strftime('%Y-%m-%d %X', time.localtime()),
+                "markdown": False,
+                "channel": "生活琐事",
+                "attachments": [
+                    {
+                        "title": "思过崖的账单",
+                        "text": "话费余额：" + str(self.query_fees()) + "，流量余额：" + str(
+                            self.query_traffic()) + "，账单详情：" + str(
+                            unicom.query_bills())
+                    }
+                ]
+            })
+        })
 
-unicom = Unicom(config['siguoya']['mobile']['number'], config['siguoya']['mobile']['password'])
 
-requests.post('https://hook.bearychat.com/=bw8S2/incoming/'+config['bearychat']['token'], data={
-    'payload': json.dumps({
-        "text": "联通话费账单监控 - " + time.strftime('%Y-%m-%d %X', time.localtime()),
-        "markdown": False,
-        "channel": "生活琐事",
-        "attachments": [
-            {
-                "title": "思过崖的账单",
-                "text": "话费余额：" + str(unicom.query_fees()) + "，流量余额：" + str(unicom.query_traffic()) + "，账单详情：" + str(
-                    unicom.query_bills())
-            }
-        ]
-    })
-})
+# unicom = Unicom(config['siguoya']['mobile']['number'], config['siguoya']['mobile']['password'])
+# unicom.send_notioce()
