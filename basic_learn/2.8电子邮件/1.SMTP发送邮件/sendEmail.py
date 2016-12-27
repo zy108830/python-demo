@@ -23,5 +23,7 @@ msg = MIMEText(input('请输入邮件内容：'), 'plain', 'utf-8')
 msg['From'] = _format_addr('Python爱好者 <%s>' % from_addr)
 msg['To'] = _format_addr('管理员 <%s>' % to_addr)
 msg['Subject'] = Header(input('请输入邮件标题：'), 'utf-8').encode()
+
+
 server.sendmail(from_addr, [to_addr], msg.as_string())
 server.quit()
