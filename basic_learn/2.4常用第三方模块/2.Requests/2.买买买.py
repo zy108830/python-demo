@@ -8,14 +8,15 @@ class Buy(object):
     def __init__(self):
         self.price = {
             'paw': '',
-            'mobileSSD': ''
+            'mobileSSD': '',
+            '1pwd':''
         }
 
     def get_paw_price(self):
         res = requests.get('https://paw.cloud/')
         soup = BeautifulSoup(res.text, 'lxml')
         labels = soup.select('.btn-purchase-label')
-        self.price['paw'] = str.strip(labels[1].text)
+        self.price['paw'] = str.replace(str.strip(labels[1].text),'Buy Paw for ','')
 
     def get_samsung_ssd_price(self):
         res = requests.get(
@@ -32,6 +33,11 @@ class Buy(object):
             if store['dp_id'] == '1117284354669906-1':
                 info += ', ' + store['site_name'] + '的价格是' + store['price']
         self.price['mobileSSD']=info
+
+    def get_1pwd_price(self):
+        res=requests.get('https://itunes.apple.com/us/app/1password-password-manager/id568903335?mt=8')
+        soup=BeautifulSoup(res.text,'lxml')
+        self.price['1pwd']=soup.select('.in-app-price')[0].text
 
     def send_notioce(self):
         requests.post('https://hook.bearychat.com/=bw8S2/incoming/' + config['bearychat']['token'], data={
@@ -50,4 +56,5 @@ class Buy(object):
 buy = Buy()
 buy.get_paw_price()
 buy.get_samsung_ssd_price()
+buy.get_1pwd_price()
 buy.send_notioce()
