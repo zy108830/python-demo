@@ -20,19 +20,20 @@ class Buy(object):
 
     def get_samsung_ssd_price(self):
         res = requests.get(
-            'https://browser.gwdang.com/brwext/dp_query?permanent_id=6585d74e6b8befd86c6a7173e4d3dbac&union=union_gwdang&url=https%3A%2F%2Fitem.jd.com%2F2376036.html&site=360buy&isbn=&name=%E4%B8%89%E6%98%9F(SAMSUNG)%20T3%E7%B3%BB%E5%88%97%20500G%20%E7%A7%BB%E5%8A%A8%E5%9B%BA%E6%80%81%E7%A1%AC%E7%9B%98%EF%BC%88MU-PT500B%2FCN%EF%BC%89&keyword=&skeyword=&id=&price=1299&stock=1&province_id=&subsite_id=5&cat_id=670-686-693&pic=%2F%2Fimg11.360buyimg.com%2Fn5%2Fjfs%2Ft2440%2F269%2F1545921797%2F169393%2Fbc984916%2F56c28620Nbf4f59e0.jpg&userid=undefined&shop_name=&shop_addres=&cat_name=undefined&brand_string=&format=json&union=union_gwdang&version=1482373773539&from_device=chrome&crc64=1',
+            'https://p.3.cn/prices/get?type=1&area=19_1601_3634&pdtk=&pduid=349952081&pdpin=245165558-998015&pdbp=0&skuid=J_2376036',
             headers={
-                'HOST': 'browser.gwdang.com',
-                'Referer': 'https://item.jd.com/2376036.html',
+                'HOST': 'p.3.cn',
+                'Referer': 'https://search.jd.com/Search?keyword=%E7%A7%BB%E5%8A%A8ssd&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&wq=%E7%A7%BB%E5%8A%A8ssd&psort=3&click=0',
                 'USER_AGENT': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36'
             })
         goods = json.loads(res.text)
-        info = goods['code-server']['brand'] + goods['code-server']['clean_title'] + '的京东价格是' + goods['code-server'][
-            'price']
-        for store in goods['b2c']['store']:
-            if store['dp_id'] == '1117284354669906-1':
-                info += ', ' + store['site_name'] + '的价格是' + store['price']
-        self.price['mobileSSD']=info
+        try:
+            #m是厂家指导价
+            info = '三星移动SSD的京东原价是' + goods[0]['op']+'，秒杀价是'+goods[0]['p']
+            self.price['mobileSSD'] = info
+        except:
+            self.send_error('京东价格数据解析出错：'+res.text)
+
 
     def get_1pwd_price(self):
         res=requests.get('https://itunes.apple.com/us/app/1password-password-manager/id568903335?mt=8')
@@ -53,6 +54,22 @@ class Buy(object):
                 ]
             })
         })
+
+    def send_error(self,error_msg):
+        requests.post('https://hook.bearychat.com/=bw8S2/incoming/' + config['bearychat']['token'], data={
+            'payload': json.dumps({
+                "text": "买买买 - " + time.strftime('%Y-%m-%d %X', time.localtime()),
+                "markdown": False,
+                "channel": "生活琐事",
+                "attachments": [
+                    {
+                        "title": "错误捕获",
+                        "text": error_msg
+                    }
+                ]
+            })
+        })
+
 buy = Buy()
 buy.get_paw_price()
 buy.get_samsung_ssd_price()

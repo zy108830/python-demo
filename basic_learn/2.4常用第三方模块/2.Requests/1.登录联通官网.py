@@ -45,10 +45,13 @@ class Unicom():
         except:
             self.send_error('登录失败', html)
             return
-        print('http://wap.10010.com/t/loginCallBack.htm?code=%s' % code)
         # 登录成功之后的回调
-        html = self.session.get('http://wap.10010.com/t/loginCallBack.htm?code=%s' % code, headers=self.headers,
+        try:
+            html = self.session.get('http://wap.10010.com/t/loginCallBack.htm?code=%s' % code, headers=self.headers,
                                 verify=False).text
+        except:
+            print('登录成功，回调失败')
+            print(html)
 
     def query_fees(self):
         # html = self.session.get('http://wap.10010.com/t/query/queryRealTimeFeeInfoNew.htm', headers=headers,verify=False).text
