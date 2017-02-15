@@ -5,7 +5,7 @@ from  selenium import webdriver
 
 class BDXS(object):
     def __init__(self):
-        self.conn = mysql.connector.connect(user='root', password='', database='baidu_xueshu')
+        self.conn = mysql.connector.connect(user='forge', password='forge', database='baidu_xueshu')
         self.cursor = self.conn.cursor(buffered=True)
         self.header = {'HOST': 'xueshu.baidu.com',
             'Referer': 'http://xueshu.baidu.com/usercenter/data/journal?cmd=journal_search&query=&language=1',
@@ -31,22 +31,25 @@ class BDXS(object):
             soup = BeautifulSoup(journal_detail, 'lxml')
             article_soupes = soup.select('.result')
             for article_soup in article_soupes:
-                article={}
-                article['article_journal_id']=journal_record[0]
-                article['article_title']=article_soup.select('.res-title')[0].text
-                article['article_attach_json']=article_soup.select('.relevant')[0]['data_link']
-                self.cursor.execute('INSERT INTO article(article_journal_id,article_title) VALUES (%s,%s)',[article['article_journal_id'],article['article_title']])
+                article = {}
+                article['article_journal_id'] = journal_record[0]
+                article['article_title'] = article_soup.select('.res-title')[0].text
+                article['article_attach_json'] = article_soup.select('.relevant')[0]['data_link']
+                self.cursor.execute('INSERT INTO article(article_journal_id,article_title) VALUES (%s,%s)',
+                    [article['article_journal_id'], article['article_title']])
                 self.conn.commit()
-                self.write_attach_record(self.cursor.lastrowid,article['article_attach_json'])
+                self.write_attach_record(self.cursor.lastrowid, article['article_attach_json'])
 
-    def write_attach_record(self,article_id,attach_json):
+    def write_attach_record(self, article_id, attach_json):
         try:
-            attach_list=json.loads(attach_json)
+            attach_list = json.loads(attach_json)
             for attach in attach_list:
-                self.cursor.execute('INSERT INTO attach(attach_article_id,attach_link,attach_author,attach_type) VALUES (%s,%s,%s,%s)',[article_id,attach['sc_vurl'],attach['sc_vanchor'],attach['sc_vtype']])
+                self.cursor.execute(
+                    'INSERT INTO attach(attach_article_id,attach_link,attach_author,attach_type) VALUES (%s,%s,%s,%s)',
+                    [article_id, attach['sc_vurl'], attach['sc_vanchor'], attach['sc_vtype']])
                 self.conn.commit()
-        except:
-            print(article_id,attach_json)
+        except Exception as e:
+            print(article_id, attach_json, e)
 
     def get_journal_detail(self, journal_id):
         driver = webdriver.PhantomJS(executable_path='/usr/local/phantomjs/2.1.1/bin/phantomjs')
